@@ -89,7 +89,7 @@ for n in "${CREATED_AT[@]}"
 do
     if [ $(($CURRENT_TIME_UNIX - $n)) -ge 21600 ]; then
         sleep 2
-        curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://miss.nem.one/api/notes/delete
+        curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
     else
         echo Protected
     fi
