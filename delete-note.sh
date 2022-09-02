@@ -42,11 +42,19 @@ if [ $REPLY_PROTECT != "true" ]; then
     fi
 fi
 
+#IncludeReplyで使うため中身を反対に
+if [ $REPLY_PROTECT = "true" ]; then
+    REPLY_PROTECT=false
+fi
+if [ $REPLY_PROTECT = "false" ]; then
+    REPLY_PROTECT=true
+fi
+
 
 
 #ノートIDなど（検討中）
 OUTPUT='' #Initializing variables
-OUTPUT=`curl -X POST -s -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","limit": '$LIMIT'}' https://${ADDRESS}/api/users/notes`
+OUTPUT=`curl -X POST -s -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","limit": '$LIMIT',"includeReplies": '$REPLY_PROTECT'}' https://${ADDRESS}/api/users/notes`
 CREATED_AT=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
 NOTE_ID=(`echo $OUTPUT | jq -r '.[] | .id'`)
 
@@ -59,7 +67,7 @@ do
     length=$(($length-1))
     UNTIL_ID=${NOTE_ID[$length]}
 
-    OUTPUT=`curl -s -X POST -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","untilId": "'$UNTIL_ID'","limit": '$LIMIT'}' https://${ADDRESS}/api/users/notes`
+    OUTPUT=`curl -s -X POST -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","untilId": "'$UNTIL_ID'","limit": '$LIMIT',"includeReplies": '$REPLY_PROTECT'}' https://${ADDRESS}/api/users/notes`
     CREATED_AT+=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
     NOTE_ID+=(`echo $OUTPUT | jq -r '.[] | .id'`)
 
