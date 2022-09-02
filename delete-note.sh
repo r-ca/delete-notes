@@ -39,16 +39,6 @@ OUTPUT=`curl -X POST -s -H "Content-Type: application/json" -d '{"userId": "'$US
 CREATED_AT=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
 NOTE_ID=(`echo $OUTPUT | jq -r '.[] | .id'`)
 
-#DEBUG
-#echo `echo $OUTPUT | jq -r '.[] | .id'`
-# n=0
-# echo $CREATED_AT | while read line 
-# do
-#     echo $line
-#     CREATED_AT_ARRAY[$n]="$line"
-#     n=n+1
-# done
-
 length=${#NOTE_ID[@]}
 length=$(($length-1))
 UNTIL_ID=${NOTE_ID[$length]}
@@ -66,13 +56,10 @@ do
     length=$(($length-1))
     LAST_ID=${NOTE_ID[$length]}
 
-    #DEBUG
-    #echo "${NOTE_ID[@]}"
     echo "CURRENT: ${#NOTE_ID[@]}"
 done
 
 echo "TOTAL: ${#NOTE_ID[@]}"
-#echo ${NOTE_ID[@]}
 
 n=0
 for m in "${CREATED_AT[@]}" #投稿日時をいい感じ™に変換(UNIX時間にする)
