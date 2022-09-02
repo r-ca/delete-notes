@@ -8,34 +8,45 @@ if [ ! -e ./config.txt ]; then
     exit
 fi
 
-#Import user info
+#Import config
+TEMP='' #Initializing variables. 
+TEMP=`cat ./config.txt | grep -s address`
+ADDRESS=${TEMP:8}
 TEMP=`cat ./config.txt | grep -s userid`
 USERID=${TEMP:7}
 TEMP='' #Initializing variables.
 TEMP=`cat ./config.txt | grep -s token`
 TOKEN=${TEMP:6}
-#TEMP='' #Initializing variables. #リプライ保護(todo)
-#TEMP=`cat ./config.txt | grep -s protectReplies`
-#REPLY_PROTECT=${TEMP:15}
+TEMP='' #Initializing variables. #リプライ保護(todo)
+TEMP=`cat ./config.txt | grep -s protectReplies`
+REPLY_PROTECT=${TEMP:15}
 TEMP='' #Initializing variables. 
 TEMP=`cat ./config.txt | grep -s limit`
 LIMIT=${TEMP:6}
 
 #最大取得数検証
-if [ $LIMIT -le 1 ]; then
+if [ $LIMIT -le 0 ]; then
     echo 'ERROR: Illegal limit value. (1~100)'
     exit
 fi
-if [ $LIMIT -ge 100 ]; then
+if [ $LIMIT -ge 101 ]; then
     echo 'ERROR: Illegal limit value. (1~100)'
     exit
+fi
+
+#リプライ保護コンフィグ検証
+if [ $REPLY_PROTECT != "true" ]; then
+    if [ $REPLY_PROTECT != "false" ]; then
+        echo 'ERROR: Reply protection setting contains invalid character string. (true of false)'
+        exit
+    fi
 fi
 
 
 
 #ノートIDなど（検討中）
 OUTPUT='' #Initializing variables
-OUTPUT=`curl -X POST -s -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","limit": '$LIMIT'}' https://miss.nem.one/api/users/notes`
+OUTPUT=`curl -X POST -s -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","limit": '$LIMIT'}' https://${ADDRESS}/api/users/notes`
 CREATED_AT=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
 NOTE_ID=(`echo $OUTPUT | jq -r '.[] | .id'`)
 
@@ -48,7 +59,7 @@ do
     length=$(($length-1))
     UNTIL_ID=${NOTE_ID[$length]}
 
-    OUTPUT=`curl -s -X POST -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","untilId": "'$UNTIL_ID'","limit": '$LIMIT'}' https://miss.nem.one/api/users/notes`
+    OUTPUT=`curl -s -X POST -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","untilId": "'$UNTIL_ID'","limit": '$LIMIT'}' https://${ADDRESS}/api/users/notes`
     CREATED_AT+=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
     NOTE_ID+=(`echo $OUTPUT | jq -r '.[] | .id'`)
 
