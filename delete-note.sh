@@ -6,26 +6,34 @@ if [ ! -e ./config.txt ]; then
     exit
 fi
 
-#configのインポート(仮実装)
-TEMP='' #Initializing variables.  #インスタンスアドレス
-TEMP=`cat ./config.txt | grep -s address`
-ADDRESS=${TEMP:8}
-TEMP='' #Initializing variables. #ユーザーID
-TEMP=`cat ./config.txt | grep -s userid`
-USERID=${TEMP:7}
-TEMP='' #Initializing variables. #トークン
-TEMP=`cat ./config.txt | grep -s token`
-TOKEN=${TEMP:6}
-TEMP='' #Initializing variables. #リプライ保護
-TEMP=`cat ./config.txt | grep -s protectReplies`
-REPLY_PROTECT=${TEMP:15}
-TEMP='' #Initializing variables. #リミット
-TEMP=`cat ./config.txt | grep -s limit`
-LIMIT=${TEMP:6}
-TEMP='' #Initializing variables. #保護期間
-TEMP=`cat ./config.txt | grep -s protectionPeriod`
-PROTECTION_PERIOD=${TEMP:17}
-
+if [ ${1} = "-q" ]; then
+    #configのインポート(仮実装)
+    TEMP='' #Initializing variables.  #インスタンスアドレス
+    TEMP=`cat ./config.txt | grep -s address`
+    ADDRESS=${TEMP:8}
+    TEMP='' #Initializing variables. #ユーザーID
+    TEMP=`cat ./config.txt | grep -s userid`
+    USERID=${TEMP:7}
+    TEMP='' #Initializing variables. #トークン
+    TEMP=`cat ./config.txt | grep -s token`
+    TOKEN=${TEMP:6}
+    TEMP='' #Initializing variables. #リプライ保護
+    TEMP=`cat ./config.txt | grep -s protectReplies`
+    REPLY_PROTECT=${TEMP:15}
+    TEMP='' #Initializing variables. #リミット
+    TEMP=`cat ./config.txt | grep -s limit`
+    LIMIT=${TEMP:6}
+    TEMP='' #Initializing variables. #保護期間
+    TEMP=`cat ./config.txt | grep -s protectionPeriod`
+    PROTECTION_PERIOD=${TEMP:17}
+else
+    read -p "Instance address : " ADDRESS
+    read -p "Misskey user ID : " USERID
+    read -p "Misskey token : " TOKEN
+    read -p "Reply protection (true/false): " REPLY_PROTECT
+    read -p "Number of notes to retrieve in one request (1~100) : " LIMIT
+    read -p "Note protection period (sec) : " PROTECTION_PERIOD
+fi
 
 #最大取得数検証
 if [ $LIMIT -le 0 ]; then
