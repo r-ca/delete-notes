@@ -1,0 +1,6 @@
+address:example.com
+userid:xxxxxx
+token:xxxxxxxxxxxxxxxxxxxxx
+protectReplies:false
+limit:100
+protectionPeriod:43200
