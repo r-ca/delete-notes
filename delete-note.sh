@@ -1,12 +1,15 @@
 #!/bin/bash
 
-#configファイル存在確認
-if [ ! -e ./config.txt ]; then
-    echo ERROR: config.txt is not exist.
-    exit
-fi
+if [ $# -ne 0 ]; then
 
-if [ ${1} = "-q" ]; then
+OP_QUIET=false
+
+case "$@" in
+    "-q" ) OP_QUIET=true;;
+
+esac
+
+if [ ${OP_QUIET} = "true" ]; then
     #configのインポート(仮実装)
     TEMP='' #Initializing variables.  #インスタンスアドレス
     TEMP=`cat ./config.txt | grep -s address`
@@ -35,9 +38,17 @@ else
     read -p "Note protection period (sec) : " PROTECTION_PERIOD
 fi
 
+#configファイル存在確認
+if [ ! -e ./config.txt ]; then
+    if [ ${OP_QUIET} = "true" ]; then
+        echo ERROR: config.txt is not exist.
+        exit
+    fi
+fi
+
 #最大取得数検証
 if [ $LIMIT -le 0 ]; then
-    if [ ${1} = "-q" ]; then #-q
+    if [ ${OP_QUIET} = "true" ]; then
         echo 'ERROR: Illegal limit value. (1~100)'
         exit
     else
@@ -45,7 +56,7 @@ if [ $LIMIT -le 0 ]; then
     fi
 fi
 if [ $LIMIT -ge 101 ]; then
-    if [ ${1} = "-q" ]; then #-q
+    if [ ${OP_QUIET} = "true" ]; then
         echo 'ERROR: Illegal limit value. (1~100)'
         exit
     else
@@ -56,7 +67,7 @@ fi
 #リプライ保護コンフィグ検証
 if [ $REPLY_PROTECT != "true" ]; then
     if [ $REPLY_PROTECT != "false" ]; then
-        if [ ${1} = "-q" ]; then #-q
+        if [ ${OP_QUIET} = "true" ]; then
             echo 'ERROR: Reply protection setting contains invalid character string. (true of false)'
             exit
         else
@@ -98,12 +109,12 @@ do
     length=$(($length-1))
     LAST_ID=${NOTE_ID[$length]}
 
-    if [ ${1} = "-q" ]; then #-q
+    if [ ${OP_QUIET} = "true" ]; then
         echo "CURRENT: ${#NOTE_ID[@]}"
     fi
 done
 
-if [ ${1} = "-q" ]; then #-q
+if [ ${OP_QUIET} = "true" ]; then
     echo "TOTAL: ${#NOTE_ID[@]}"
 fi
 
@@ -126,11 +137,11 @@ do
         sleep 2
         curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
     else
-        if [ ${1} = "-q" ]; then #-q
+        if [ ${OP_QUIET} = "true" ]; then
             echo Protected
         fi
     fi
-        if [ ${1} = "-q" ]; then #-q
+        if [ ${OP_QUIET} = "true" ]; then
             echo "$c/${#NOTE_ID[@]} Processing completed."
         fi
     c=$(($c+1))
