@@ -1,14 +1,12 @@
 #!/bin/bash
 
-
-
-#Check if file exists
+#configファイル存在確認
 if [ ! -e ./config.txt ]; then
     echo ERROR: config.txt is not exist.
     exit
 fi
 
-#Import config
+#configのインポート(仮実装)
 TEMP='' #Initializing variables.  #インスタンスアドレス
 TEMP=`cat ./config.txt | grep -s address`
 ADDRESS=${TEMP:8}
@@ -57,7 +55,7 @@ fi
 
 
 
-#ノートIDなど（検討中）
+#初回ノート取得
 OUTPUT='' #Initializing variables
 OUTPUT=`curl -X POST -s -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","limit": '$LIMIT',"includeReplies": '$REPLY_PROTECT'}' https://${ADDRESS}/api/users/notes`
 CREATED_AT=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
