@@ -9,20 +9,25 @@ if [ ! -e ./config.txt ]; then
 fi
 
 #Import config
-TEMP='' #Initializing variables. 
+TEMP='' #Initializing variables.  #インスタンスアドレス
 TEMP=`cat ./config.txt | grep -s address`
 ADDRESS=${TEMP:8}
+TEMP='' #Initializing variables. #ユーザーID
 TEMP=`cat ./config.txt | grep -s userid`
 USERID=${TEMP:7}
-TEMP='' #Initializing variables.
+TEMP='' #Initializing variables. #トークン
 TEMP=`cat ./config.txt | grep -s token`
 TOKEN=${TEMP:6}
-TEMP='' #Initializing variables. #リプライ保護(todo)
+TEMP='' #Initializing variables. #リプライ保護
 TEMP=`cat ./config.txt | grep -s protectReplies`
 REPLY_PROTECT=${TEMP:15}
-TEMP='' #Initializing variables. 
+TEMP='' #Initializing variables. #リミット
 TEMP=`cat ./config.txt | grep -s limit`
 LIMIT=${TEMP:6}
+TEMP='' #Initializing variables. #保護期間
+TEMP=`cat ./config.txt | grep -s protectionPeriod`
+PROTECTION_PERIOD=${TEMP:17}
+
 
 #最大取得数検証
 if [ $LIMIT -le 0 ]; then
@@ -95,7 +100,7 @@ CURRENT_TIME_UNIX=`date -u +%s`
 c=0
 for n in "${CREATED_AT[@]}"
 do
-    if [ $(($CURRENT_TIME_UNIX - $n)) -ge 21600 ]; then
+    if [ $(($CURRENT_TIME_UNIX - $n)) -ge $PROTECTION_PERIOD ]; then
         sleep 2
         curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
     else
