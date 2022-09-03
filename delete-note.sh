@@ -37,19 +37,31 @@ fi
 
 #最大取得数検証
 if [ $LIMIT -le 0 ]; then
-    echo 'ERROR: Illegal limit value. (1~100)'
-    exit
+    if [ ${1} = "-q" ]; then #-q
+        echo 'ERROR: Illegal limit value. (1~100)'
+        exit
+    else
+        exit
+    fi
 fi
 if [ $LIMIT -ge 101 ]; then
-    echo 'ERROR: Illegal limit value. (1~100)'
-    exit
+    if [ ${1} = "-q" ]; then #-q
+        echo 'ERROR: Illegal limit value. (1~100)'
+        exit
+    else
+        exit
+    fi
 fi
 
 #リプライ保護コンフィグ検証
 if [ $REPLY_PROTECT != "true" ]; then
     if [ $REPLY_PROTECT != "false" ]; then
-        echo 'ERROR: Reply protection setting contains invalid character string. (true of false)'
-        exit
+        if [ ${1} = "-q" ]; then #-q
+            echo 'ERROR: Reply protection setting contains invalid character string. (true of false)'
+            exit
+        else
+            exit
+        fi
     fi
 fi
 
@@ -86,10 +98,14 @@ do
     length=$(($length-1))
     LAST_ID=${NOTE_ID[$length]}
 
-    echo "CURRENT: ${#NOTE_ID[@]}"
+    if [ ${1} = "-q" ]; then #-q
+        echo "CURRENT: ${#NOTE_ID[@]}"
+    fi
 done
 
-echo "TOTAL: ${#NOTE_ID[@]}"
+if [ ${1} = "-q" ]; then #-q
+    echo "TOTAL: ${#NOTE_ID[@]}"
+fi
 
 n=0
 for m in "${CREATED_AT[@]}" #投稿日時をいい感じ™に変換(UNIX時間にする)
@@ -110,8 +126,12 @@ do
         sleep 2
         curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
     else
-        echo Protected
+        if [ ${1} = "-q" ]; then #-q
+            echo Protected
+        fi
     fi
-    echo "$c/${#NOTE_ID[@]} Processing completed."
+        if [ ${1} = "-q" ]; then #-q
+            echo "$c/${#NOTE_ID[@]} Processing completed."
+        fi
     c=$(($c+1))
 done
