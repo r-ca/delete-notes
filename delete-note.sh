@@ -1,13 +1,15 @@
 #!/bin/bash
 
-if [ $# -ne 0 ]; then
-
 OP_QUIET=false
+DEBUG=false
 
-case "$@" in
-    "-q" ) OP_QUIET=true;;
-
-esac
+for line in $@
+do
+    case "$line" in
+        "-q" ) OP_QUIET=true;;
+        "-d" ) echo "Debug mode is ENABLED!" ; DEBUG=true;;
+    esac
+done
 
 if [ ${OP_QUIET} = "true" ]; then
     #configのインポート(仮実装)
@@ -38,6 +40,16 @@ else
     read -p "Note protection period (sec) : " PROTECTION_PERIOD
 fi
 
+#DebugMode
+if [ $DEBUG = "true" ];then
+    echo "ADDRESS: $ADDRESS"
+    echo "USERID: $USERID"
+    echo "TOKEN: $TOKEN"
+    echo "REPLY_PROTECT: $REPLY_PROTECT"
+    echo "LIMIT: $LIMIT"
+    echo "PROTECTION_PERIOD: $PROTECTION_PERIOD"
+fi
+
 #configファイル存在確認
 if [ ! -e ./config.txt ]; then
     if [ ${OP_QUIET} = "true" ]; then
@@ -46,10 +58,18 @@ if [ ! -e ./config.txt ]; then
     fi
 fi
 
+#DebugMode
+if [ $DEBUG = "true" ]; then
+    echo `ls -l | grep -s config.txt`
+fi
+
 #最大取得数検証
 if [ $LIMIT -le 0 ]; then
     if [ ${OP_QUIET} = "true" ]; then
         echo 'ERROR: Illegal limit value. (1~100)'
+        if [ $DEBUG = "true" ];then #DebugMode
+            echo "value too small in LIMIT"
+        fi
         exit
     else
         exit
@@ -58,6 +78,9 @@ fi
 if [ $LIMIT -ge 101 ]; then
     if [ ${OP_QUIET} = "true" ]; then
         echo 'ERROR: Illegal limit value. (1~100)'
+        if [ $DEBUG = "true" ];then #DebugMode
+            echo "value too large in LIMIT"
+        fi
         exit
     else
         exit
@@ -87,8 +110,13 @@ fi
 
 
 #初回ノート取得
+#DebugMode
+if [ $DEBUG = "false" ]; then
+    CURL_SILENT="-s"
+fi
+
 OUTPUT='' #Initializing variables
-OUTPUT=`curl -X POST -s -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","limit": '$LIMIT',"includeReplies": '$REPLY_PROTECT'}' https://${ADDRESS}/api/users/notes`
+OUTPUT=`curl -X POST $CURL_SILENT -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","limit": '$LIMIT',"includeReplies": '$REPLY_PROTECT'}' https://${ADDRESS}/api/users/notes`
 CREATED_AT=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
 NOTE_ID=(`echo $OUTPUT | jq -r '.[] | .id'`)
 
@@ -101,7 +129,7 @@ do
     length=$(($length-1))
     UNTIL_ID=${NOTE_ID[$length]}
 
-    OUTPUT=`curl -s -X POST -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","untilId": "'$UNTIL_ID'","limit": '$LIMIT',"includeReplies": '$REPLY_PROTECT'}' https://${ADDRESS}/api/users/notes`
+    OUTPUT=`curl -X POST $CURL_SILENT -H "Content-Type: application/json" -d '{"userId": "'$USERID'","i": "'$TOKEN'","untilId": "'$UNTIL_ID'","limit": '$LIMIT',"includeReplies": '$REPLY_PROTECT'}' https://${ADDRESS}/api/users/notes`
     CREATED_AT+=(`echo $OUTPUT | jq -r '.[] | .createdAt'`)
     NOTE_ID+=(`echo $OUTPUT | jq -r '.[] | .id'`)
 
