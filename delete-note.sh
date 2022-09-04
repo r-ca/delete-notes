@@ -152,7 +152,7 @@ do
     if [ "$(uname)" == 'Darwin' ]; then
         CREATED_AT[$n]=`date -u -j -f "%Y-%m-%d %H:%M:%S" "${m:0:10} ${m:11:8}" +%s` #macOS用
     else
-        CREATED_AT[$n]=`date -u +%s --date '${m:0:10} ${m:11:8}'` #Linux用
+        CREATED_AT[$n]=`date -u +%s --date "${m:0:10} ${m:11:8}"` #Linux用
     fi
     n=$(($n + 1))
 done

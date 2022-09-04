@@ -13,7 +13,7 @@ Misskeyでノートを一括削除するシェルスクリプトです
   
 以下の環境で動作を確認しています  
 - macOS Monterey 12.4
-- ~~Ubuntu Server 20.04~~
+- Ubuntu Server 20.04
 - ~~Ubuntu Server 22.04.1 (デスクトップ環境追加インストール)~~
 - ~~ArchLinux (2022年8月にセットアップした環境)~~
 
