@@ -2,12 +2,14 @@
 
 OP_QUIET=false
 DEBUG=false
+NO_PROTECTION=false
 
 for line in $@
 do
     case "$line" in
         "-q" ) OP_QUIET=true;;
         "-d" ) echo "Debug mode is ENABLED!" ; DEBUG=true;;
+        "-n" ) echo "Non-protection mode" ; NO_PROTECTION=true
     esac
 done
 
@@ -161,16 +163,29 @@ CURRENT_TIME_UNIX=`date -u +%s`
 c=0
 for n in "${CREATED_AT[@]}"
 do
-    if [ $(($CURRENT_TIME_UNIX - $n)) -ge $PROTECTION_PERIOD ]; then
+
+    if [ $NO_PROTECTION = "false" ];then
+
+        if [ $(($CURRENT_TIME_UNIX - $n)) -ge $PROTECTION_PERIOD ]; then
+            sleep 2
+            curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
+        else
+            if [ ${OP_QUIET} = "true" ]; then
+                echo Protected
+            fi
+        fi
+            if [ ${OP_QUIET} = "true" ]; then
+                echo "$c/${#NOTE_ID[@]} Processing completed."
+            fi
+        c=$(($c+1))
+    
+    else
         sleep 2
         curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
-    else
-        if [ ${OP_QUIET} = "true" ]; then
-            echo Protected
-        fi
-    fi
         if [ ${OP_QUIET} = "true" ]; then
             echo "$c/${#NOTE_ID[@]} Processing completed."
         fi
-    c=$(($c+1))
+        c=$(($c+1))
+    fi
+
 done
