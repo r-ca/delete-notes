@@ -1,5 +1,16 @@
 #!/bin/bash
 
+function help()
+{
+    echo Misskey-Auto-NoteDelete
+    echo "Usage: delete-note.sh [Options]"
+    echo "Options:"
+    echo "-q: Run cript mode (Quiet)"
+    echo "-d: Run debug mode (Debug)"
+    echo "-n: Ignore protection period (Non-protection)"
+    exit
+}
+
 OP_QUIET=false
 DEBUG=false
 NO_PROTECTION=false
@@ -9,7 +20,8 @@ do
     case "$line" in
         "-q" ) OP_QUIET=true;;
         "-d" ) echo "Debug mode is ENABLED!" ; DEBUG=true;;
-        "-n" ) echo "Non-protection mode" ; NO_PROTECTION=true
+        "-n" ) echo "Non-protection mode" ; NO_PROTECTION=true;;
+        "-h" ) help;;
     esac
 done
 
