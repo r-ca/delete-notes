@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #META
-VERSION_NO=1.0.2
+VERSION_NO=1.1.0
 
 function help()
 {
@@ -88,7 +88,7 @@ fi
 
 #configファイル存在確認
 if [ ! -e ./config.txt ]; then
-    if [ ${OP_QUIET} = "true" ]; then
+    if [ ${OP_QUIET} = "false" ]; then
         echo ERROR: config.txt is not exist.
         exit
     fi
@@ -101,7 +101,7 @@ fi
 
 #最大取得数検証
 if [ $LIMIT -le 0 ]; then
-    if [ ${OP_QUIET} = "true" ]; then
+    if [ ${OP_QUIET} = "false" ]; then
         echo 'ERROR: Illegal limit value. (1~100)'
         if [ $DEBUG = "true" ];then #DebugMode
             echo "value too small in LIMIT"
@@ -112,7 +112,7 @@ if [ $LIMIT -le 0 ]; then
     fi
 fi
 if [ $LIMIT -ge 101 ]; then
-    if [ ${OP_QUIET} = "true" ]; then
+    if [ ${OP_QUIET} = "false" ]; then
         echo 'ERROR: Illegal limit value. (1~100)'
         if [ $DEBUG = "true" ];then #DebugMode
             echo "value too large in LIMIT"
@@ -126,7 +126,7 @@ fi
 #リプライ保護コンフィグ検証
 if [ $REPLY_PROTECT != "true" ]; then
     if [ $REPLY_PROTECT != "false" ]; then
-        if [ ${OP_QUIET} = "true" ]; then
+        if [ ${OP_QUIET} = "false" ]; then
             echo 'ERROR: Reply protection setting contains invalid character string. (true of false)'
             exit
         else
@@ -173,12 +173,12 @@ do
     length=$(($length-1))
     LAST_ID=${NOTE_ID[$length]}
 
-    if [ ${OP_QUIET} = "true" ]; then
+    if [ ${OP_QUIET} = "false" ]; then
         echo "CURRENT: ${#NOTE_ID[@]}"
     fi
 done
 
-if [ ${OP_QUIET} = "true" ]; then
+if [ ${OP_QUIET} = "false" ]; then
     echo "TOTAL: ${#NOTE_ID[@]}"
 fi
 
@@ -204,11 +204,11 @@ do
             sleep 2
             curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
         else
-            if [ ${OP_QUIET} = "true" ]; then
+            if [ ${OP_QUIET} = "false" ]; then
                 echo Protected
             fi
         fi
-            if [ ${OP_QUIET} = "true" ]; then
+            if [ ${OP_QUIET} = "false" ]; then
                 echo "$c/${#NOTE_ID[@]} Processing completed."
             fi
         c=$(($c+1))
@@ -216,7 +216,7 @@ do
     else
         sleep 2
         curl -s -X POST -H "Content-Type: application/json" -d '{"noteId": "'${NOTE_ID[c]}'","i": "'$TOKEN'"}' https://${ADDRESS}/api/notes/delete
-        if [ ${OP_QUIET} = "true" ]; then
+        if [ ${OP_QUIET} = "false" ]; then
             echo "$c/${#NOTE_ID[@]} Processing completed."
         fi
         c=$(($c+1))
