@@ -5,9 +5,9 @@ function help()
     echo Misskey-Auto-NoteDelete
     echo "Usage: delete-note.sh [Options]"
     echo "Options:"
-    echo "-q: Run cript mode (Quiet)"
-    echo "-d: Run debug mode (Debug)"
-    echo "-n: Ignore protection period (Non-protection)"
+    echo "-q: Run cript mode (--quiet)"
+    echo "-d: Run debug mode (--debug)"
+    echo "-n: Ignore protection period (--non-protection)"
     exit
 }
 
@@ -22,6 +22,11 @@ do
         "-d" ) echo "Debug mode is ENABLED!" ; DEBUG=true;;
         "-n" ) echo "Non-protection mode" ; NO_PROTECTION=true;;
         "-h" ) help;;
+
+        "--quiet" ) OP_QUIET=true;;
+        "--debug" ) echo "Debug mode is ENABLED!" ; DEBUG=true;;
+        "--non-protection" ) echo "Non-protection mode" ; NO_PROTECTION=true;;
+        "--help" ) help;;
     esac
 done
 
