@@ -11,6 +11,15 @@ function help()
     exit
 }
 
+function version()
+{
+    echo "Misskey-Auto-NoteDelete"
+    echo -n "version: 1.0.0 "
+    echo "by Romcat/Nemchan"
+    echo "Repo: melt-romcat/delete-notes"
+    exit
+}
+
 OP_QUIET=false
 DEBUG=false
 NO_PROTECTION=false
@@ -22,11 +31,13 @@ do
         "-d" ) echo "Debug mode is ENABLED!" ; DEBUG=true;;
         "-n" ) echo "Non-protection mode" ; NO_PROTECTION=true;;
         "-h" ) help;;
+        "-v" ) version;;
 
         "--quiet" ) OP_QUIET=true;;
         "--debug" ) echo "Debug mode is ENABLED!" ; DEBUG=true;;
         "--non-protection" ) echo "Non-protection mode" ; NO_PROTECTION=true;;
         "--help" ) help;;
+        "--version" ) version;;
     esac
 done
 
