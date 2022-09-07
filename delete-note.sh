@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#META
+VERSION_NO=1.0.1
+
 function help()
 {
     echo Misskey-Auto-NoteDelete
@@ -14,7 +17,7 @@ function help()
 function version()
 {
     echo "Misskey-Auto-NoteDelete"
-    echo -n "version: 1.0.0 "
+    echo -n "version: $VERSION_NO "
     echo "by Romcat/Nemchan"
     echo "Repo: melt-romcat/delete-notes"
     exit
