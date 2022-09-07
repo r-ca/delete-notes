@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #META
-VERSION_NO=1.0.1
+VERSION_NO=1.0.2
 
 function help()
 {
@@ -11,7 +11,10 @@ function help()
     echo "-q: Run cript mode (--quiet)"
     echo "-d: Run debug mode (--debug)"
     echo "-n: Ignore protection period (--non-protection)"
+    echo "-h: Show help (--help)"
+    echo "-v: Show version info (--version)"
     exit
+    
 }
 
 function version()
