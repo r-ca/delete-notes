@@ -22,7 +22,7 @@ function version()
     echo "Misskey-Auto-NoteDelete"
     echo -n "version: $VERSION_NO "
     echo "by Romcat/Nemchan"
-    echo "Repo: melt-romcat/delete-notes"
+    echo "Repo: r-ca/delete-notes"
     exit
 }
 

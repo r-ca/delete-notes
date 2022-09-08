@@ -19,7 +19,7 @@ Misskeyでノートを一括削除するシェルスクリプトです
 
 ## 使い方
 1. **任意のディレクトリにcloneする**  
-`git clone https://github.com/melt-romcat/delete-notes/`
+`git clone https://github.com/r-ca/delete-notes/`
 
 2. **実行権限を付与する**  
 `chmod +x ./delete-note.sh`
